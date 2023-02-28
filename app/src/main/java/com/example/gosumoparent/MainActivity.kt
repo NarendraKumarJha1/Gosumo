@@ -23,14 +23,22 @@ import okhttp3.Response
 import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
+    //Global variable for EscrowId
     var escrowIdDig = 15
     override fun onCreate(savedInstanceState: Bundle?) {
 
+        //Get Id when the application starts
         GetEscrowId()
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //Button declarations
         val button1 = findViewById<Button>(R.id.Create)
+        val button2 = findViewById<Button>(R.id.Open)
+        val button3 = findViewById<Button>(R.id.Get)
+
+        //Create Escrow Id
         button1.setOnClickListener {
             Popup("Hold on let me create a Escrow Id for you")
             button1.isEnabled = false
@@ -40,23 +48,20 @@ class MainActivity : AppCompatActivity() {
             CreateEscrowId()
         }
 
-        val button2 = findViewById<Button>(R.id.Open)
+        //Open game
         button2.setOnClickListener {
             val id = findViewById<TextView>(R.id.EscrorwId)
             val userInput = id.text.toString()
             launchGame(userInput);
         }
 
-
-// Get Escrow Id
-        val button3 = findViewById<Button>(R.id.Get)
+        // Get Escrow Id
         button3.setOnClickListener{
             GetEscrowId()// Funtion to get Escrow Id
         }
-
-
     }
 
+    //Getter setter for Escrow Id
     fun StoreUpdatedId(value: Int){
         escrowIdDig = value
     }
@@ -64,6 +69,8 @@ class MainActivity : AppCompatActivity() {
         return escrowIdDig
     }
 
+
+    //Launch game with Escrow Id
     private fun launchGame(value : String){
         val packageName = "com.Abhiwan.Gosumo"
         val activityName = "com.unity3d.player.UnityPlayerActivity"
@@ -79,13 +86,15 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Game not found. Please install it.", Toast.LENGTH_SHORT).show()
         }
     }
+
+    //Custom Toast
     fun Popup(value: String){
         runOnUiThread{
             Toast.makeText(this, value, Toast.LENGTH_SHORT).show()
         }
-
     }
 
+    //Updating Escrow Id by calling Custom API
     fun UpdateEscrowId(){
         val dynamicId = ReturnUpdatedId()+1 //dynamic variable
 
@@ -117,6 +126,7 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    //Getting Escrow Id from Custom API
     fun GetEscrowId(){
         val url = "https://escrowid-example.onrender.com/digit"
         val client = OkHttpClient()
@@ -126,11 +136,7 @@ class MainActivity : AppCompatActivity() {
             .build()
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-/*
-                Popup("Failed to Get Escrow Id")
-*/
-                print("Successfully Created Id" + e)
-
+              print("Successfully Created Id" + e)
             }
             override fun onResponse(call: Call, response: Response) {
 
@@ -139,13 +145,12 @@ class MainActivity : AppCompatActivity() {
                 StoreUpdatedId(digit)
                 val id = findViewById<TextView>(R.id.EscrorwId)
                 id.text = digit.toString()
-/*
-                Popup("Successfully get "+ digit.toString())
-*/
                 print("Successfully Created Id" + digit.toString())
             }
         })
     }
+
+    //Creating Escrow Id by passing User Data
     fun CreateEscrowId(){
         val json = """
             {
