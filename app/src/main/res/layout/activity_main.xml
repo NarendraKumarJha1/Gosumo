@@ -6,8 +6,13 @@
     android:layout_height="match_parent"
     android:gravity="center"
     tools:context=".MainActivity">
-
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:id="@+id/Title_Gosumo"
         android:layout_width="268dp"
         android:layout_height="41dp"
         android:background="#65B394"
@@ -25,7 +30,7 @@
         app:layout_constraintVertical_bias="0.01"
         tools:ignore="MissingConstraints" />
     <TextView
-        android:id="@+id/EscrorwId"
+        android:id="@+id/EscrowId"
         android:layout_width="100dp"
         android:layout_height="40dp"
         android:background="#4665FF"

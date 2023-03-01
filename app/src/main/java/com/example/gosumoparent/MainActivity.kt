@@ -1,26 +1,23 @@
 package com.example.gosumoparent
 
-import android.content.Intent
+import android.app.Activity
+import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.gosumoparent.model.UserPost
-import okhttp3.MediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody
-import okhttp3.Call
-import retrofit2.converter.gson.GsonConverterFactory
-import java.io.IOException
+import androidx.fragment.app.Fragment
 import okhttp3.*
-import okhttp3.Callback
-import okhttp3.Response
 import org.json.JSONObject
+import java.io.IOException
+
 
 class MainActivity : AppCompatActivity() {
     //Global variable for EscrowId
@@ -32,6 +29,12 @@ class MainActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val fragmentManager = supportFragmentManager
+        val transaction = fragmentManager.beginTransaction()
+        val blankFragment = BlankFragment.newInstance("param1", "param2")
+        transaction.add(R.id.fragment_container, blankFragment)
+        transaction.commit()
 
         //Button declarations
         val button1 = findViewById<Button>(R.id.Create)
@@ -50,9 +53,9 @@ class MainActivity : AppCompatActivity() {
 
         //Open game
         button2.setOnClickListener {
-            val id = findViewById<TextView>(R.id.EscrorwId)
+            val id = findViewById<TextView>(R.id.EscrowId)
             val userInput = id.text.toString()
-            launchGame(userInput);
+            blankFragment.launchGame(userInput)
         }
 
         // Get Escrow Id
@@ -69,23 +72,7 @@ class MainActivity : AppCompatActivity() {
         return escrowIdDig
     }
 
-
     //Launch game with Escrow Id
-    private fun launchGame(value : String){
-        val packageName = "com.Abhiwan.Gosumo"
-        val activityName = "com.unity3d.player.UnityPlayerActivity"
-        val combinedIntent = Intent().apply {
-            action = Intent.ACTION_SEND
-            type = "text/plain"
-            putExtra(Intent.EXTRA_TEXT, value)
-            setClassName(packageName, activityName)
-        }
-        try{
-            startActivity(combinedIntent)
-        }catch (e: Exception) {
-            Toast.makeText(this, "Game not found. Please install it.", Toast.LENGTH_SHORT).show()
-        }
-    }
 
     //Custom Toast
     fun Popup(value: String){
@@ -116,7 +103,7 @@ class MainActivity : AppCompatActivity() {
             }
             override fun onResponse(call: Call, response: Response)
             {
-                val id = findViewById<TextView>(R.id.EscrorwId)
+                val id = findViewById<TextView>(R.id.EscrowId)
                 val json = JSONObject( response.body()?.string())
                 val digit = json.getInt("digit")
                 Popup("Successfully Updated Escrow Id "+digit)
@@ -136,14 +123,14 @@ class MainActivity : AppCompatActivity() {
             .build()
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-              print("Successfully Created Id" + e)
+              print("Failed Created Id" + e)
             }
             override fun onResponse(call: Call, response: Response) {
 
                 val json = JSONObject( response.body()?.string())
                 val digit = json.getInt("digit")
                 StoreUpdatedId(digit)
-                val id = findViewById<TextView>(R.id.EscrorwId)
+                val id = findViewById<TextView>(R.id.EscrowId)
                 id.text = digit.toString()
                 print("Successfully Created Id" + digit.toString())
             }
@@ -175,7 +162,7 @@ class MainActivity : AppCompatActivity() {
             {
                 Popup("Successfully created Escrow Id")
                 print("Successfully Created Id")
-                val id = findViewById<TextView>(R.id.EscrorwId)
+                val id = findViewById<TextView>(R.id.EscrowId)
                 id.text = "Generating"
                 UpdateEscrowId()
             }
@@ -183,5 +170,29 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
+/*
+class MyFragment : Fragment() {
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        // Initialize any resources that depend on the Activity
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        // Inflate the layout XML file that defines the Fragment's UI
+        val rootView = inflater.inflate(R.layout.activity_main, container, false)
+
+        // Obtain references to any Views in the layout that the Fragment needs to access
+        val textView = rootView.findViewById<TextView>(R.id.Title_Gosumo)
+
+        // Set the text of the TextView
+        textView.text = "Hello Gosumo!"
+
+        // Return the inflated View
+        return rootView
+    }
+}
+*/
+
 
 
