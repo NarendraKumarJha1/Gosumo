@@ -9,27 +9,26 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
 
-
 class MainActivity : AppCompatActivity() {
     //Global variable for EscrowId
     var escrowIdDig = 15
-    override fun onCreate(savedInstanceState: Bundle?) {
+    var myJson = JSONObject()
+    var User1 = "0xce3Db11E9f521F1b3dA0B5B6c07EE8f7a5A0F94D"
+    var User2 = "0xc53aba332e45e7B49C86D4D35747037288b23D57"
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
         //Get Id when the application starts
         GetEscrowId()
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         val fragmentManager = supportFragmentManager
         val transaction = fragmentManager.beginTransaction()
         val blankFragment = BlankFragment.newInstance("param1", "param2")
@@ -37,9 +36,30 @@ class MainActivity : AppCompatActivity() {
         transaction.commit()
 
         //Button declarations
+        myJson.put("escrowId", ReturnUpdatedId())
         val button1 = findViewById<Button>(R.id.Create)
         val button2 = findViewById<Button>(R.id.Open)
         val button3 = findViewById<Button>(R.id.Get)
+        val spinner = findViewById<Spinner>(R.id.spinner)
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                // Do something with the selected item
+                val selectedItem = parent.getItemAtPosition(position)
+                if(selectedItem == "User1"){
+                    myJson.put("walletAddress", User1)
+                    Toast.makeText(applicationContext, "Selected: $selectedItem with wallet address $User1", Toast.LENGTH_SHORT).show()
+                }else if(selectedItem == "User2"){
+                    myJson.put("walletAddress", User2)
+                    Toast.makeText(applicationContext, "Selected: $selectedItem with wallet address $User1", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                Toast.makeText(applicationContext, "Nothing selected", Toast.LENGTH_SHORT).show()
+            }
+
+        }
 
         //Create Escrow Id
         button1.setOnClickListener {
@@ -55,7 +75,8 @@ class MainActivity : AppCompatActivity() {
         button2.setOnClickListener {
             val id = findViewById<TextView>(R.id.EscrowId)
             val userInput = id.text.toString()
-            blankFragment.launchGame(userInput)
+            myJson.put("escrowId", userInput)
+            blankFragment.launchGame(myJson.toString())
         }
 
         // Get Escrow Id
@@ -168,31 +189,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
-
 }
-/*
-class MyFragment : Fragment() {
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        // Initialize any resources that depend on the Activity
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Inflate the layout XML file that defines the Fragment's UI
-        val rootView = inflater.inflate(R.layout.activity_main, container, false)
-
-        // Obtain references to any Views in the layout that the Fragment needs to access
-        val textView = rootView.findViewById<TextView>(R.id.Title_Gosumo)
-
-        // Set the text of the TextView
-        textView.text = "Hello Gosumo!"
-
-        // Return the inflated View
-        return rootView
-    }
-}
-*/
 
 
 

@@ -2,6 +2,7 @@ package com.example.gosumoparent
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -44,15 +45,6 @@ class BlankFragment : Fragment(R.layout.fragment_blank) {
         return this
     }
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment BlankFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             BlankFragment().apply {
@@ -63,45 +55,16 @@ class BlankFragment : Fragment(R.layout.fragment_blank) {
             }
     }
     public fun launchGame(value : String){
-/*        if (!isAdded) {
-*//*            val mainActivity = MainActivity()
-            mainActivity.Popup("Not attached ")*//*
-            return
-        }*/
-/*        val pkg = "com.Abhiwan.Gosumo"
-        val activityName = "com.unity3d.player.UnityPlayerActivity"
-
+        val pkg = "com.Abhiwan.Gosumo"
         val key = "game_data"
         val intent = requireActivity().packageManager.getLaunchIntentForPackage(pkg)
         if(intent != null) {
-*//*            Log.d(TAG, "intent contents -->$intent")*//*
-                intent.putExtra(key, value)
+            intent.putExtra(key, value)
             startActivity(intent)
         }
         else
         {
             Toast.makeText(this.context, "Install kar", Toast.LENGTH_SHORT).show()
-        }*/
-
-
-        //My working Code
-            val packageName = "com.Abhiwan.Gosumo"
-            val activityName = "com.unity3d.player.UnityPlayerActivity"
-            val combinedIntent = Intent().apply {
-                action = Intent.ACTION_SEND
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, value)
-                setClassName(packageName, activityName)
-            }
-            if(combinedIntent!=null){
-                startActivity(combinedIntent)
-            }else{
-                Toast.makeText(this.context, "Game not found. Please install it.", Toast.LENGTH_SHORT).show()
-            }
-            try{
-            startActivity(combinedIntent)
-        }catch (e: Exception) {
-            Toast.makeText(this.context, "Game not found. Please install it.", Toast.LENGTH_SHORT).show()
         }
     }
 }
